@@ -5,3 +5,12 @@
 variable "cluster_name" {
   type = string
 }
+
+################################################################################
+# IAM
+################################################################################
+
+variable "create_spot_service_linked_role" {
+  type    = bool
+  default = true
+}

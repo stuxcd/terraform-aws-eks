@@ -92,7 +92,7 @@ module "eks" {
 
 module "karpenter_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = ">= 5.2"
+  version = ">= 5.3"
 
   role_name                          = "karpenter-controller-${local.name}"
   attach_karpenter_controller_policy = true
@@ -119,6 +119,12 @@ resource "aws_iam_instance_profile" "karpenter" {
   role = module.eks.eks_managed_node_groups["karpenter"].iam_role_name
 }
 
+resource "aws_iam_service_linked_role" "spot" {
+  count = var.create_spot_service_linked_role ? 1 : 0
+
+  aws_service_name = "spot.amazonaws.com"
+}
+
 resource "helm_release" "karpenter" {
   namespace        = "karpenter"
   create_namespace = true
@@ -126,7 +132,7 @@ resource "helm_release" "karpenter" {
   name       = "karpenter"
   repository = "https://charts.karpenter.sh"
   chart      = "karpenter"
-  version    = "0.15.0"
+  version    = "0.8.2"
 
   set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"

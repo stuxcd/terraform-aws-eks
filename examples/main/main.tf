@@ -15,6 +15,9 @@ module "eks" {
 
   ## required
   cluster_name = "test"
+
+  ## optional
+  create_spot_service_linked_role = false
 }
 
 output "eks_cluster_name" {
