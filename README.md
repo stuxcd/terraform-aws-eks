@@ -1,4 +1,4 @@
-# AWS EKS Terraform module
+# AWS EKS Terraform module :ghost:
 
 Terraform module which creates a simple public EKS cluster and all supporting resources.
 
@@ -10,7 +10,6 @@ module "eks" {
   # version = ""
 
   ## required
-
-  ## optional
+  cluster_name = "test"
 }
 ```
