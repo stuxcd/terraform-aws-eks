@@ -8,9 +8,7 @@ locals {
 
   partition = data.aws_partition.current.partition
 
-  tags = {
-    Example = local.name
-  }
+  tags = var.tags
 }
 
 ################################################################################
