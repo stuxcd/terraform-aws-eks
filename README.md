@@ -2,7 +2,7 @@
 
 Terraform module which creates a simple public EKS cluster and all supporting resources.
 
-## Usage
+# Usage
 
 ```hcl
 module "eks" {
@@ -16,3 +16,7 @@ module "eks" {
   create_spot_service_linked_role = true
 }
 ```
+
+<!-- BEGIN_TF_DOCS -->
+{{ .Content }}
+<!-- END_TF_DOCS -->
