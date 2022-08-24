@@ -20,5 +20,6 @@ variable "create_spot_service_linked_role" {
 ################################################################################
 
 variable "tags" {
-  type = map(string)
+  type    = map(string)
+  default = {}
 }
