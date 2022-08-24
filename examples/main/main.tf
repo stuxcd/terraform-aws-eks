@@ -19,7 +19,3 @@ module "eks" {
   ## optional
   create_spot_service_linked_role = false
 }
-
-output "eks_cluster_name" {
-  value = module.eks.cluster_id
-}

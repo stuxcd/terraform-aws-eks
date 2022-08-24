@@ -3,7 +3,8 @@
 ################################################################################
 
 variable "cluster_name" {
-  type = string
+  description = "Name of the EKS cluster"
+  type        = string
 }
 
 ################################################################################
@@ -11,8 +12,9 @@ variable "cluster_name" {
 ################################################################################
 
 variable "create_spot_service_linked_role" {
-  type    = bool
-  default = true
+  description = "Indicates whether or not to create the spot.amazonaws.com service linked role"
+  type        = bool
+  default     = true
 }
 
 ################################################################################
@@ -20,6 +22,7 @@ variable "create_spot_service_linked_role" {
 ################################################################################
 
 variable "tags" {
-  type    = map(string)
-  default = {}
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
 }
