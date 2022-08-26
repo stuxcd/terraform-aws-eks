@@ -39,6 +39,13 @@
         ],
         "message": "chore(release): version ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
+    ],
+    [
+      "semantic-release-slack-bot",
+      {
+        "notifyOnSuccess": true,
+        "notifyOnFail": true
+      }
     ]
   ]
 }
