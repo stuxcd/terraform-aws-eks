@@ -18,8 +18,8 @@ jobs:
       name: Setup pre-commit
 
     - uses: actions/setup-go@v3
-    - run: go install github.com/terraform-docs/terraform-docs
-      name: install terraform docs    
+    - run: go install github.com/terraform-docs/terraform-docs@v0.16.0
+      name: Install terraform docs  
     
     - uses: terraform-linters/setup-tflint@v2
       name: Setup TFLint
