@@ -8,33 +8,19 @@ on:
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
+    
     steps:
     - uses: actions/checkout@v3
       name: Checkout
-
-    - uses: actions/setup-python@v4
-      name: Setup Python
-    - run: pip install pre-commit
-      name: Setup pre-commit
-
-    - uses: actions/setup-go@v3
-      name: Setup Go
-      with:
-        go-version: '1.19.0'
-        check-latest: true
-    
-    - uses: terraform-linters/setup-tflint@v2
-      name: Setup TFLint
-      with:
-        tflint_version: v0.39.3
 
     - name: Setup Infracost
       uses: infracost/actions/setup@v2
       with:
         api-key: ${{ secrets.INFRACOST_API_KEY }}
-
-    - run: pre-commit install
-    - run: |
-        export PATH=${PATH}:`go env GOPATH`/bin
-        go install github.com/terraform-docs/terraform-docs@v0.16.0
-        pre-commit run --all-files
+    
+    - name: Run pre-commit
+      uses: clowdhaus/terraform-composite-actions/pre-commit@main
+      with:
+        terraform-version: 1.2.0
+        terraform-docs-version: v16.0.0
+        args: "--all-files --color always --show-diff-on-failure"
