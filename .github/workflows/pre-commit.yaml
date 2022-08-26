@@ -8,16 +8,19 @@ on:
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
+    
     steps:
     - uses: actions/checkout@v3
       name: Checkout
-    - uses: actions/setup-python@v4
-      name: Setup Python
-    - uses: terraform-linters/setup-tflint@v2
-      name: Setup TFLint
+
+    - name: Setup Infracost
+      uses: infracost/actions/setup@v2
       with:
-        tflint_version: v0.39.3
-    - run: pip install pre-commit
-      name: Setup pre-commit
-    - run: pre-commit install
-    - run: pre-commit run --all-files
+        api-key: ${{ secrets.INFRACOST_API_KEY }}
+    
+    - name: Run pre-commit
+      uses: clowdhaus/terraform-composite-actions/pre-commit@v1.3.0
+      with:
+        terraform-version: 1.2.0
+        terraform-docs-version: v0.16.0
+        args: "--all-files --color always --show-diff-on-failure"
