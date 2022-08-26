@@ -29,5 +29,5 @@ repos:
           - '--args=--only=terraform_workspace_remote'
       - id: infracost_breakdown
         args:
-          - --args=--path=.
+          - --args=--path=examples/main
         verbose: true
