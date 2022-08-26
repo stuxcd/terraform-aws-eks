@@ -25,5 +25,6 @@ jobs:
             semantic-release-slack-bot@3.5.3
         env:
           GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SEMANTIC_RELEASE_PACKAGE: ${{ github.repository }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_NAME: Semantic Releaser
