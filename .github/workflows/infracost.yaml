@@ -66,7 +66,7 @@ jobs:
 
       - name: Send cost estimate to Slack
         uses: slackapi/slack-github-action@v1
-        if: ${{ steps.infracost-slack.outputs.diffTotalMonthlyCost > 0 }} # Only post to Slack if there is a cost diff
+        if: ${{ steps.infracost-slack.outputs.diffTotalMonthlyCost != 0 }} # Only post to Slack if there is a cost diff
         with:
           payload: ${{ steps.infracost-slack.outputs.slack-message }}
         env:

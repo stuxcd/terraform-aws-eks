@@ -27,4 +27,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
           SEMANTIC_RELEASE_PACKAGE: ${{ github.repository }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_NAME: Semantic Releaser
