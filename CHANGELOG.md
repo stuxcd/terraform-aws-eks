@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.2.2](https://github.com/stuxcd/terraform-aws-eks/compare/v1.2.1...v1.2.2) (2022-08-26)
+
+
+### Bug Fixes
+
+* **docs:** testing semantic releaser and slack ([4a65ecf](https://github.com/stuxcd/terraform-aws-eks/commit/4a65ecf75b992cbed9f15ebd749519c444b04087))
+* **pre-commit:** update infracost path ([dd305ac](https://github.com/stuxcd/terraform-aws-eks/commit/dd305ac7872b5d84e0a23e14fd9426a9da862eb3))
+
 ### [1.2.1](https://github.com/stuxcd/terraform-aws-eks/compare/v1.2.0...v1.2.1) (2022-08-26)
 
 
