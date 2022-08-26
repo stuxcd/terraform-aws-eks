@@ -26,3 +26,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SEMANTIC_RELEASE_PACKAGE: ${{ github.repository }}
