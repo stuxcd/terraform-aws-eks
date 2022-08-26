@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.2.1](https://github.com/stuxcd/terraform-aws-eks/compare/v1.2.0...v1.2.1) (2022-08-26)
+
+
+### Bug Fixes
+
+* **docs:** this is a test ([c55ae1e](https://github.com/stuxcd/terraform-aws-eks/commit/c55ae1ebccdeb3e1109db258323538ff8e7b8caa))
+
 ## [1.2.0](https://github.com/stuxcd/terraform-aws-eks/compare/v1.1.1...v1.2.0) (2022-08-26)
 
 
