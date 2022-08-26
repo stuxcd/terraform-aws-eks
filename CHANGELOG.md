@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0](https://github.com/stuxcd/terraform-aws-eks/compare/v1.1.1...v1.2.0) (2022-08-26)
+
+
+### Features
+
+* **infracost:** introduce infracost and update pre-commit ([21477c1](https://github.com/stuxcd/terraform-aws-eks/commit/21477c103888f395fad3c8b0780ff6d64a0fc5b3))
+
 ### [1.1.1](https://github.com/stuxcd/terraform-aws-eks/compare/v1.1.0...v1.1.1) (2022-08-26)
 
 
