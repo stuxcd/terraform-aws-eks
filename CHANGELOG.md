@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.2.5](https://github.com/stuxcd/terraform-aws-eks/compare/v1.2.4...v1.2.5) (2022-09-09)
+
+
+### Bug Fixes
+
+* **test:** increase ec2 size ([#14](https://github.com/stuxcd/terraform-aws-eks/issues/14)) ([2941926](https://github.com/stuxcd/terraform-aws-eks/commit/2941926669827349a14e12b4df3929546c555330))
+
 ### [1.2.4](https://github.com/stuxcd/terraform-aws-eks/compare/v1.2.3...v1.2.4) (2022-09-09)
 
 
