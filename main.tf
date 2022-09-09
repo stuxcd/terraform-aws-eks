@@ -53,7 +53,7 @@ module "eks" {
 
   eks_managed_node_groups = {
     karpenter = {
-      instance_types        = ["t3a.large"]
+      instance_types        = ["t3a.medium"]
       create_security_group = false
 
       min_size     = 1
