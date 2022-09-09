@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.2.4](https://github.com/stuxcd/terraform-aws-eks/compare/v1.2.3...v1.2.4) (2022-09-09)
+
+
+### Bug Fixes
+
+* **pr-title:** add pr title check for standardized commits ([b3b331a](https://github.com/stuxcd/terraform-aws-eks/commit/b3b331a56308c5d69f571f0a3eaf7c456e5ffcb3))
+
 ### [1.2.3](https://github.com/stuxcd/terraform-aws-eks/compare/v1.2.2...v1.2.3) (2022-08-26)
 
 
