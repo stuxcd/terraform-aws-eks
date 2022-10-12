@@ -6,13 +6,14 @@ Terraform module which creates a simple public EKS cluster and all supporting re
 
 ```hcl
 module "eks" {
-  source    = "github.com/stuxcd/terraform-aws-eks"
+  source = "github.com/stuxcd/terraform-aws-eks"
 
   ## required
-  cluster_name = "test"
+  cluster_name = "jb-test"
 
   ## optional
-  create_spot_service_linked_role = true
+  create_spot_service_linked_role = false
+  tags                            = {}
 }
 ```
 
