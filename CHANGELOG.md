@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.3.1](https://github.com/stuxcd/terraform-aws-eks/compare/v1.3.0...v1.3.1) (2022-10-29)
+
+
+### Bug Fixes
+
+* **karpenter:** upgrade karpenter version ([#19](https://github.com/stuxcd/terraform-aws-eks/issues/19)) ([5fdb4dd](https://github.com/stuxcd/terraform-aws-eks/commit/5fdb4ddd1eac8bb5b21317e94355af353909b309))
+
 ## [1.3.0](https://github.com/stuxcd/terraform-aws-eks/compare/v1.2.6...v1.3.0) (2022-10-29)
 
 
