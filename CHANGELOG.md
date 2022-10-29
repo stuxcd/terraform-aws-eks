@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0](https://github.com/stuxcd/terraform-aws-eks/compare/v1.2.6...v1.3.0) (2022-10-29)
+
+
+### Features
+
+* **cluster-version:** add cluster version variable ([#18](https://github.com/stuxcd/terraform-aws-eks/issues/18)) ([592ace7](https://github.com/stuxcd/terraform-aws-eks/commit/592ace7ca1ef33aca465d76fb4fa29ec246ec182))
+
 ### [1.2.6](https://github.com/stuxcd/terraform-aws-eks/compare/v1.2.5...v1.2.6) (2022-09-09)
 
 
