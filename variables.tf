@@ -7,6 +7,12 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "cluster_version" {
+  description = "Version of the EKS cluster"
+  type        = string
+  default     = "1.23"
+}
+
 ################################################################################
 # IAM
 ################################################################################

@@ -4,7 +4,7 @@
 
 locals {
   name            = var.cluster_name
-  cluster_version = "1.23"
+  cluster_version = var.cluster_version
 
   partition = data.aws_partition.current.partition
 
@@ -92,17 +92,14 @@ module "karpenter_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = ">= 5.3"
 
-  role_name                          = "karpenter-controller-${local.name}"
-  attach_karpenter_controller_policy = true
+  role_name = "karpenter-controller-${local.name}"
 
-  karpenter_controller_cluster_id = module.eks.cluster_id
-  karpenter_controller_ssm_parameter_arns = [
-    "arn:${local.partition}:ssm:*:*:parameter/aws/service/*"
-  ]
+  attach_karpenter_controller_policy = true
+  karpenter_controller_cluster_id    = module.eks.cluster_id
+  karpenter_subnet_account_id        = data.aws_caller_identity.current.account_id
   karpenter_controller_node_iam_role_arns = [
     module.eks.eks_managed_node_groups["karpenter"].iam_role_arn
   ]
-  karpenter_subnet_account_id = data.aws_caller_identity.current.account_id
 
   oidc_providers = {
     ex = {
@@ -173,7 +170,9 @@ resource "kubectl_manifest" "karpenter_provisioner" {
       securityGroupSelector:
         karpenter.sh/discovery: ${local.name}
       tags:
-        karpenter.sh/discovery: ${local.name}
+        Name: karpenter/${local.name}/default
+        karpenter.sh/provisioner-name: default
+        kubernetes.io/cluster/${local.name}: owned
     ttlSecondsAfterEmpty: 30
   YAML
 

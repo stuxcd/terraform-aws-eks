@@ -9,9 +9,10 @@ module "eks" {
   source = "github.com/stuxcd/terraform-aws-eks"
 
   ## required
-  cluster_name = "jb-test"
+  cluster_name = "test"
 
   ## optional
+  cluster_version                 = "1.23"
   create_spot_service_linked_role = false
   tags                            = {}
 }
@@ -31,8 +32,8 @@ module "eks" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.30.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.6.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.37.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.7.1 |
 | <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | 1.14.0 |
 
 ## Modules
@@ -61,6 +62,7 @@ module "eks" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of the EKS cluster | `string` | n/a | yes |
+| <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Version of the EKS cluster | `string` | `"1.23"` | no |
 | <a name="input_create_spot_service_linked_role"></a> [create\_spot\_service\_linked\_role](#input\_create\_spot\_service\_linked\_role) | Indicates whether or not to create the spot.amazonaws.com service linked role | `bool` | `true` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 
