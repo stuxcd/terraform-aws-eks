@@ -27,6 +27,32 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
+  enable_irsa = true
+
+  cluster_addons = {
+    coredns = {
+      resolve_conflicts = "OVERWRITE"
+    }
+    kube-proxy = {
+      resolve_conflicts = "OVERWRITE"
+    }
+    vpc-cni = {
+      resolve_conflicts = "OVERWRITE"
+    }
+    aws-ebs-csi-driver = {
+      resolve_conflicts        = "OVERWRITE"
+      service_account_role_arn = module.ebs_csi_irsa_role.iam_role_arn
+    }
+  }
+
+  # Encryption key
+  create_kms_key = true
+  cluster_encryption_config = [{
+    resources = ["secrets"]
+  }]
+  kms_key_deletion_window_in_days = 7
+  enable_kms_key_rotation         = true
+
   node_security_group_additional_rules = {
     # Control plane invoke Karpenter webhook
     ingress_karpenter_webhook_tcp = {
@@ -45,10 +71,18 @@ module "eks" {
       type        = "ingress"
       self        = "true"
     }
+    egress_all = {
+      description = "Node all egress"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "egress"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
   }
 
   node_security_group_tags = {
-    "karpenter.sh/discovery" = local.name
+    "karpenter.sh/discovery/${local.name}" = local.name
   }
 
   eks_managed_node_groups = {
@@ -81,14 +115,33 @@ module "eks" {
     }
   }
 
-  tags = local.tags
+  tags = merge(local.tags, {
+    "karpenter.sh/discovery/${local.name}" = local.name
+  })
 }
 
 ################################################################################
-# KARPENTER
+# IAM
 ################################################################################
 
-module "karpenter_irsa" {
+module "ebs_csi_irsa_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = ">= 5.3"
+
+  role_name             = "ebs-csi-${local.name}"
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = local.tags
+}
+
+module "karpenter_irsa_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = ">= 5.3"
 
@@ -97,6 +150,7 @@ module "karpenter_irsa" {
   attach_karpenter_controller_policy = true
   karpenter_controller_cluster_id    = module.eks.cluster_id
   karpenter_subnet_account_id        = data.aws_caller_identity.current.account_id
+  karpenter_tag_key                  = "karpenter.sh/discovery/${local.name}"
   karpenter_controller_node_iam_role_arns = [
     module.eks.eks_managed_node_groups["karpenter"].iam_role_arn
   ]
@@ -107,7 +161,13 @@ module "karpenter_irsa" {
       namespace_service_accounts = ["karpenter:karpenter"]
     }
   }
+
+  tags = local.tags
 }
+
+################################################################################
+# KARPENTER
+################################################################################
 
 resource "aws_iam_instance_profile" "karpenter" {
   name = "KarpenterNodeInstanceProfile-${local.name}"
@@ -125,13 +185,13 @@ resource "helm_release" "karpenter" {
   create_namespace = true
 
   name       = "karpenter"
-  repository = "https://charts.karpenter.sh"
+  repository = "oci://public.ecr.aws/karpenter"
   chart      = "karpenter"
-  version    = "0.8.2"
+  version    = "v0.18.1"
 
   set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = module.karpenter_irsa.iam_role_arn
+    value = module.karpenter_irsa_role.iam_role_arn
   }
 
   set {
@@ -147,6 +207,11 @@ resource "helm_release" "karpenter" {
   set {
     name  = "aws.defaultInstanceProfile"
     value = aws_iam_instance_profile.karpenter.name
+  }
+
+  set {
+    name  = "replicas"
+    value = 1
   }
 }
 
@@ -166,19 +231,36 @@ resource "kubectl_manifest" "karpenter_provisioner" {
         cpu: 100
     provider:
       subnetSelector:
-        karpenter.sh/discovery: ${local.name}
+        "karpenter.sh/discovery/${local.name}": ${local.name}
       securityGroupSelector:
-        karpenter.sh/discovery: ${local.name}
+        "karpenter.sh/discovery/${local.name}": ${local.name}
       tags:
+        "karpenter.sh/discovery/${local.name}": ${local.name}
         Name: karpenter/${local.name}/default
         karpenter.sh/provisioner-name: default
-        kubernetes.io/cluster/${local.name}: owned
     ttlSecondsAfterEmpty: 30
   YAML
 
   depends_on = [
     helm_release.karpenter
   ]
+}
+
+################################################################################
+# STORAGE CLASS
+################################################################################
+
+resource "kubernetes_storage_class" "gp2_encrypted" {
+  metadata {
+    name = "gp2-encrypted"
+  }
+  storage_provisioner = "ebs.csi.aws.com"
+  reclaim_policy      = "Delete"
+  volume_binding_mode = "WaitForFirstConsumer"
+  parameters = {
+    encrypted = "true"
+    kmsKeyId  = data.aws_kms_key.aws_ebs.arn
+  }
 }
 
 ################################################################################
@@ -209,7 +291,7 @@ module "vpc" {
     "kubernetes.io/cluster/${local.name}" = "shared"
     "kubernetes.io/role/internal-elb"     = 1
     # Tags subnets for Karpenter auto-discovery
-    "karpenter.sh/discovery" = local.name
+    "karpenter.sh/discovery/${local.name}" = local.name
   }
 
   tags = local.tags
