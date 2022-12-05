@@ -187,7 +187,7 @@ resource "helm_release" "karpenter" {
   name       = "karpenter"
   repository = "oci://public.ecr.aws/karpenter"
   chart      = "karpenter"
-  version    = "v0.18.1"
+  version    = "v0.19.3"
 
   set {
     name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
@@ -195,23 +195,28 @@ resource "helm_release" "karpenter" {
   }
 
   set {
-    name  = "clusterName"
+    name  = "settings.aws.clusterName"
     value = module.eks.cluster_id
   }
 
   set {
-    name  = "clusterEndpoint"
+    name  = "settings.aws.clusterEndpoint"
     value = module.eks.cluster_endpoint
   }
 
   set {
-    name  = "aws.defaultInstanceProfile"
+    name  = "settings.aws.defaultInstanceProfile"
     value = aws_iam_instance_profile.karpenter.name
   }
 
   set {
     name  = "replicas"
     value = 1
+  }
+
+  set {
+    name  = "loglevel"
+    value = "info"
   }
 }
 
@@ -222,13 +227,41 @@ resource "kubectl_manifest" "karpenter_provisioner" {
   metadata:
     name: default
   spec:
+    consolidation:
+      enabled: true
+    ttlSecondsUntilExpired: 2592000 # 30 Days
+    ttlSecondsAfterEmpty: 30
     requirements:
       - key: karpenter.sh/capacity-type
         operator: In
-        values: ["spot"]
+        values: ["spot", "on_demand"]
     limits:
       resources:
         cpu: 100
+    kubeletConfiguration:
+      systemReserved:
+        cpu: 100m
+        memory: 100Mi
+        ephemeral-storage: 1Gi
+      kubeReserved:
+        cpu: 200m
+        memory: 100Mi
+        ephemeral-storage: 3Gi
+      evictionHard:
+        memory.available: 5%
+        nodefs.available: 5%
+        nodefs.inodesFree: 5%
+      evictionSoft:
+        memory.available: 10%
+        nodefs.available: 10%
+        nodefs.inodesFree: 10%
+      evictionSoftGracePeriod:
+        memory.available: 1m
+        nodefs.available: 1m30s
+        nodefs.inodesFree: 2m
+      evictionMaxPodGracePeriod: 3m
+      podsPerCore: 2
+      maxPods: 20
     provider:
       subnetSelector:
         "karpenter.sh/discovery/${local.name}": ${local.name}
@@ -238,7 +271,16 @@ resource "kubectl_manifest" "karpenter_provisioner" {
         "karpenter.sh/discovery/${local.name}": ${local.name}
         Name: karpenter/${local.name}/default
         karpenter.sh/provisioner-name: default
-    ttlSecondsAfterEmpty: 30
+      blockDeviceMappings:
+        - deviceName: /dev/xvda
+          ebs:
+            volumeSize: 40Gi
+            volumeType: gp3
+            iops: 3000
+            encrypted: true
+            kmsKeyID: ${data.aws_kms_key.aws_ebs.arn}
+            deleteOnTermination: true
+            throughput: 125
   YAML
 
   depends_on = [
