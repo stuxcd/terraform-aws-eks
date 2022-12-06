@@ -230,7 +230,6 @@ resource "kubectl_manifest" "karpenter_provisioner" {
     consolidation:
       enabled: true
     ttlSecondsUntilExpired: 2592000 # 30 Days
-    ttlSecondsAfterEmpty: 30
     requirements:
       - key: karpenter.sh/capacity-type
         operator: In
@@ -259,7 +258,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
         memory.available: 1m
         nodefs.available: 1m30s
         nodefs.inodesFree: 2m
-      evictionMaxPodGracePeriod: 3m
+      evictionMaxPodGracePeriod: 180
       podsPerCore: 2
       maxPods: 20
     provider:
