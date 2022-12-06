@@ -17,7 +17,7 @@ module "eks" {
   cluster_name = "test"
 
   ## optional
-  cluster_version                 = "1.23"
+  cluster_version                 = "1.24"
   create_spot_service_linked_role = false
   tags                            = {}
 }
