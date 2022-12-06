@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0](https://github.com/stuxcd/terraform-aws-eks/compare/v1.3.2...v1.4.0) (2022-12-06)
+
+
+### Features
+
+* **karpenter:** upgrade karpenter version ([#24](https://github.com/stuxcd/terraform-aws-eks/issues/24)) ([0c3fe86](https://github.com/stuxcd/terraform-aws-eks/commit/0c3fe8636b0b617cc776d327451631d186e68e41))
+
 ### [1.3.2](https://github.com/stuxcd/terraform-aws-eks/compare/v1.3.1...v1.3.2) (2022-12-06)
 
 
