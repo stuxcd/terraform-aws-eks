@@ -19,7 +19,7 @@ jobs:
         api-key: ${{ secrets.INFRACOST_API_KEY }}
     
     - name: Run pre-commit
-      uses: clowdhaus/terraform-composite-actions/pre-commit@v1.6.0
+      uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.3
       with:
         terraform-version: 1.2.0
         terraform-docs-version: v0.16.0
