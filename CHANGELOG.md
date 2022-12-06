@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [1.3.2](https://github.com/stuxcd/terraform-aws-eks/compare/v1.3.1...v1.3.2) (2022-12-06)
+
+
+### Bug Fixes
+
+* **eks-module:** revert eks module to version 0.18 ([5c8e4d9](https://github.com/stuxcd/terraform-aws-eks/commit/5c8e4d98a8f4fe156c56609af63fe560e50a69af))
+
 ### [1.3.1](https://github.com/stuxcd/terraform-aws-eks/compare/v1.3.0...v1.3.1) (2022-10-29)
 
 
