@@ -12,7 +12,7 @@ module "eks" {
   cluster_name = "test"
 
   ## optional
-  cluster_version                 = "1.23"
+  cluster_version                 = "1.24"
   create_spot_service_linked_role = false
   tags                            = {}
 }
@@ -66,7 +66,7 @@ module "eks" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of the EKS cluster | `string` | n/a | yes |
-| <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Version of the EKS cluster | `string` | `"1.23"` | no |
+| <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Version of the EKS cluster | `string` | `"1.24"` | no |
 | <a name="input_create_spot_service_linked_role"></a> [create\_spot\_service\_linked\_role](#input\_create\_spot\_service\_linked\_role) | Indicates whether or not to create the spot.amazonaws.com service linked role | `bool` | `true` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 
