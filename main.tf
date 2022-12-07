@@ -21,11 +21,11 @@ module "eks" {
 
   cluster_name                    = local.name
   cluster_version                 = local.cluster_version
-  cluster_endpoint_private_access = false
-  cluster_endpoint_public_access  = true
+  cluster_endpoint_private_access = var.cluster_endpoint_private_access
+  cluster_endpoint_public_access  = var.cluster_endpoint_public_access
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  vpc_id     = var.vpc_id
+  subnet_ids = var.subnet_ids
 
   enable_irsa = true
 
@@ -87,7 +87,7 @@ module "eks" {
 
   eks_managed_node_groups = {
     karpenter = {
-      instance_types        = ["t3a.medium"]
+      instance_types        = ["t3.medium"]
       create_security_group = false
 
       min_size     = 1
@@ -102,7 +102,7 @@ module "eks" {
         xvda = {
           device_name = "/dev/xvda"
           ebs = {
-            volume_size           = 40
+            volume_size           = var.node_volume_size
             volume_type           = "gp3"
             iops                  = 3000
             throughput            = 125
@@ -221,6 +221,8 @@ resource "helm_release" "karpenter" {
 }
 
 resource "kubectl_manifest" "karpenter_provisioner" {
+  count = var.deploy_karpenter_provisioner ? 1 : 0
+
   yaml_body = <<-YAML
   apiVersion: karpenter.sh/v1alpha5
   kind: Provisioner
@@ -236,7 +238,8 @@ resource "kubectl_manifest" "karpenter_provisioner" {
         values: ["spot", "on_demand"]
     limits:
       resources:
-        cpu: 100
+        cpu: ${var.karpenter_provisioner_max_cpu}
+        memory: ${var.karpenter_provisioner_max_memory}
     kubeletConfiguration:
       systemReserved:
         cpu: 100m
@@ -273,7 +276,7 @@ resource "kubectl_manifest" "karpenter_provisioner" {
       blockDeviceMappings:
         - deviceName: /dev/xvda
           ebs:
-            volumeSize: 40Gi
+            volumeSize: "${var.node_volume_size}Gi"
             volumeType: gp3
             iops: 3000
             encrypted: true
@@ -302,38 +305,4 @@ resource "kubernetes_storage_class" "gp2_encrypted" {
     encrypted = "true"
     kmsKeyId  = data.aws_kms_key.aws_ebs.arn
   }
-}
-
-################################################################################
-# SUPPORTING RESOURCES
-################################################################################
-
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.0"
-
-  name = local.name
-  cidr = "10.0.0.0/16"
-
-  azs             = ["${data.aws_region.current.name}a", "${data.aws_region.current.name}b"]
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
-  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24"]
-
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/elb"              = 1
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.name}" = "shared"
-    "kubernetes.io/role/internal-elb"     = 1
-    # Tags subnets for Karpenter auto-discovery
-    "karpenter.sh/discovery/${local.name}" = local.name
-  }
-
-  tags = local.tags
 }

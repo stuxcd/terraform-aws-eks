@@ -18,6 +18,27 @@ module "eks" {
 }
 ```
 
+## Contribute
+
+```bash
+# install requirements
+make install_reqs
+
+# checkout your branch
+git checkout -b branch
+# make your changes
+git add <files>
+
+# commit changes
+pre-commit run --all
+cz commit
+
+# test your changes
+make test
+
+# push and make PR
+```
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -45,7 +66,6 @@ module "eks" {
 | <a name="module_ebs_csi_irsa_role"></a> [ebs\_csi\_irsa\_role](#module\_ebs\_csi\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | >= 5.3 |
 | <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 18.0 |
 | <a name="module_karpenter_irsa_role"></a> [karpenter\_irsa\_role](#module\_karpenter\_irsa\_role) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | >= 5.3 |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
 
 ## Resources
 
@@ -59,16 +79,23 @@ module "eks" {
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_kms_key.aws_ebs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/kms_key) | data source |
 | [aws_partition.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/partition) | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_cluster_endpoint_private_access"></a> [cluster\_endpoint\_private\_access](#input\_cluster\_endpoint\_private\_access) | Expose Kubernetes API in private subnets | `bool` | `true` | no |
+| <a name="input_cluster_endpoint_public_access"></a> [cluster\_endpoint\_public\_access](#input\_cluster\_endpoint\_public\_access) | Expose Kubernetes API publicly | `bool` | `false` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of the EKS cluster | `string` | n/a | yes |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | Version of the EKS cluster | `string` | `"1.24"` | no |
 | <a name="input_create_spot_service_linked_role"></a> [create\_spot\_service\_linked\_role](#input\_create\_spot\_service\_linked\_role) | Indicates whether or not to create the spot.amazonaws.com service linked role | `bool` | `true` | no |
+| <a name="input_deploy_karpenter_provisioner"></a> [deploy\_karpenter\_provisioner](#input\_deploy\_karpenter\_provisioner) | Wether to deploy the a default Karpenter provisioner | `bool` | `true` | no |
+| <a name="input_karpenter_provisioner_max_cpu"></a> [karpenter\_provisioner\_max\_cpu](#input\_karpenter\_provisioner\_max\_cpu) | The max number of cpu's the default provisioner will deploy | `number` | `40` | no |
+| <a name="input_karpenter_provisioner_max_memory"></a> [karpenter\_provisioner\_max\_memory](#input\_karpenter\_provisioner\_max\_memory) | The max memory the default provisioner will deploy | `number` | `80` | no |
+| <a name="input_node_volume_size"></a> [node\_volume\_size](#input\_node\_volume\_size) | Volume size of nodes in the cluster in GB | `number` | `40` | no |
+| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | IDs of subnets to deploy cluster into | `list(string)` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of vpc to deploy cluster into | `string` | n/a | yes |
 
 ## Outputs
 
