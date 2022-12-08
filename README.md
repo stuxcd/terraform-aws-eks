@@ -9,12 +9,20 @@ module "eks" {
   source = "github.com/stuxcd/terraform-aws-eks"
 
   ## required
-  cluster_name = "test"
+  cluster_name = "demo"
+  vpc_id       = module.vpc.vpc_id
+  subnet_ids   = module.vpc.private_subnets
 
   ## optional
-  cluster_version                 = "1.24"
-  create_spot_service_linked_role = false
-  tags                            = {}
+  cluster_version                  = "1.24"
+  cluster_endpoint_private_access  = false
+  cluster_endpoint_public_access   = true
+  node_volume_size                 = 40
+  deploy_karpenter_provisioner     = true
+  karpenter_provisioner_max_cpu    = 40
+  karpenter_provisioner_max_memory = 80
+  create_spot_service_linked_role  = false
+  tags                             = {}
 }
 ```
 
@@ -92,6 +100,7 @@ make test
 | <a name="input_deploy_karpenter_provisioner"></a> [deploy\_karpenter\_provisioner](#input\_deploy\_karpenter\_provisioner) | Wether to deploy the a default Karpenter provisioner | `bool` | `true` | no |
 | <a name="input_karpenter_provisioner_max_cpu"></a> [karpenter\_provisioner\_max\_cpu](#input\_karpenter\_provisioner\_max\_cpu) | The max number of cpu's the default provisioner will deploy | `number` | `40` | no |
 | <a name="input_karpenter_provisioner_max_memory"></a> [karpenter\_provisioner\_max\_memory](#input\_karpenter\_provisioner\_max\_memory) | The max memory the default provisioner will deploy | `number` | `80` | no |
+| <a name="input_node_group_instance_type"></a> [node\_group\_instance\_type](#input\_node\_group\_instance\_type) | Set the instance type of the initial node group that karpenter runs on | `string` | `"t3.medium"` | no |
 | <a name="input_node_volume_size"></a> [node\_volume\_size](#input\_node\_volume\_size) | Volume size of nodes in the cluster in GB | `number` | `40` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | IDs of subnets to deploy cluster into | `list(string)` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |

@@ -31,3 +31,11 @@ install_reqs:
 	brew install infracost terraform tflint terraform-docs infracost pre-commit commitizen go
 	${INFO} "installing pre-commit"
 	pre-commit install
+	cd test && go mod download
+
+# The 3h timeout is important
+# should the tests exceed this limit go will not run the function to destroy deployments
+test:
+	${INFO} "running tests"
+	cd test
+	go test -v -timeout 3h

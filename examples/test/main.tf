@@ -3,7 +3,7 @@
 ################################################################################
 
 provider "aws" {
-  region = "eu-west-2"
+  region = var.aws_region
   default_tags {
     tags = {
       terraform = "true"
@@ -16,7 +16,7 @@ provider "aws" {
 ################################################################################
 
 locals {
-  cluster_name = "test"
+  cluster_name = var.cluster_name
   tags = {
     project_code = "PO-1234"
     environment  = "shared"
@@ -35,16 +35,11 @@ module "eks" {
   vpc_id       = module.vpc.vpc_id
   subnet_ids   = module.vpc.private_subnets
 
-  ## optional
-  cluster_version                  = "1.24"
-  cluster_endpoint_private_access  = true
-  cluster_endpoint_public_access   = false
-  node_volume_size                 = 40
-  deploy_karpenter_provisioner     = true
-  karpenter_provisioner_max_cpu    = 40
-  karpenter_provisioner_max_memory = 80
-  create_spot_service_linked_role  = false
-  tags                             = local.tags
+  # optional
+  node_group_instance_type        = var.node_group_instance_type
+  cluster_endpoint_private_access = false
+  cluster_endpoint_public_access  = true
+  tags                            = local.tags
 }
 
 ################################################################################

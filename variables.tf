@@ -25,6 +25,12 @@ variable "cluster_endpoint_public_access" {
   default     = false
 }
 
+variable "node_group_instance_type" {
+  description = "Set the instance type of the initial node group that karpenter runs on"
+  type        = string
+  default     = "t3.medium"
+}
+
 ################################################################################
 # NETWORKING
 ################################################################################
